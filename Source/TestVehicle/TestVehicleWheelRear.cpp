@@ -5,8 +5,8 @@
 
 UTestVehicleWheelRear::UTestVehicleWheelRear()
 {
-	ShapeRadius = 35.f;
-	ShapeWidth = 10.0f;
+	ShapeRadius = 57.f;
+	ShapeWidth = 30.0f;
 	bAffectedByHandbrake = true;
 	SteerAngle = 0.f;
 }

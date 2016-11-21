@@ -26,10 +26,13 @@ const FName ATestVehiclePawn::LookRightBinding("LookRight");
 ATestVehiclePawn::ATestVehiclePawn()
 {
 	// Car mesh
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CarMesh(TEXT("/Game/Vehicle/Sedan/Sedan_SkelMesh.Sedan_SkelMesh"));
+	//static ConstructorHelpers::FObjectFinder<USkeletalMesh> CarMesh(TEXT("/Game/Vehicle/Sedan/Sedan_SkelMesh.Sedan_SkelMesh"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CarMesh(TEXT("/Game/Vehicles/VH_Buggy/Mesh/SK_Buggy_Vehicle.SK_Buggy_Vehicle"));
 	GetMesh()->SetSkeletalMesh(CarMesh.Object);
 
-	static ConstructorHelpers::FClassFinder<UObject> AnimBPClass(TEXT("/Game/Vehicle/Sedan/Sedan_AnimBP"));
+	//static ConstructorHelpers::FClassFinder<UObject> AnimBPClass(TEXT("/Game/Vehicle/Sedan/Sedan_AnimBP"));
+	static ConstructorHelpers::FClassFinder<UObject> AnimBPClass(TEXT("/Game/Vehicles/VH_Buggy/Blueprint/VH_BuggyAnimBP"));
+
 	GetMesh()->SetAnimInstanceClass(AnimBPClass.Class);
 
 	// Simulation
@@ -38,20 +41,24 @@ ATestVehiclePawn::ATestVehiclePawn()
 	check(Vehicle4W->WheelSetups.Num() == 4);
 
 	Vehicle4W->WheelSetups[0].WheelClass = UTestVehicleWheelFront::StaticClass();
-	Vehicle4W->WheelSetups[0].BoneName = FName("Wheel_Front_Left");
-	Vehicle4W->WheelSetups[0].AdditionalOffset = FVector(0.f, -12.f, 0.f);
+	Vehicle4W->WheelSetups[0].BoneName = FName("F_L_wheelJNT");
+	//Vehicle4W->WheelSetups[0].AdditionalOffset = FVector(0.f, -30.f, 0.f);
 
 	Vehicle4W->WheelSetups[1].WheelClass = UTestVehicleWheelFront::StaticClass();
-	Vehicle4W->WheelSetups[1].BoneName = FName("Wheel_Front_Right");
-	Vehicle4W->WheelSetups[1].AdditionalOffset = FVector(0.f, 12.f, 0.f);
+	Vehicle4W->WheelSetups[1].BoneName = FName("F_R_wheelJNT");
+	//Vehicle4W->WheelSetups[1].AdditionalOffset = FVector(0.f, 30.f, 0.f);
 
 	Vehicle4W->WheelSetups[2].WheelClass = UTestVehicleWheelRear::StaticClass();
-	Vehicle4W->WheelSetups[2].BoneName = FName("Wheel_Rear_Left");
-	Vehicle4W->WheelSetups[2].AdditionalOffset = FVector(0.f, -12.f, 0.f);
+	Vehicle4W->WheelSetups[2].BoneName = FName("B_L_wheelJNT");
+	//Vehicle4W->WheelSetups[2].AdditionalOffset = FVector(0.f, -30.f, 0.f);
 
 	Vehicle4W->WheelSetups[3].WheelClass = UTestVehicleWheelRear::StaticClass();
-	Vehicle4W->WheelSetups[3].BoneName = FName("Wheel_Rear_Right");
-	Vehicle4W->WheelSetups[3].AdditionalOffset = FVector(0.f, 12.f, 0.f);
+	Vehicle4W->WheelSetups[3].BoneName = FName("B_R_wheelJNT");
+	//Vehicle4W->WheelSetups[3].AdditionalOffset = FVector(0.f, 30.f, 0.f);
+
+	//Vehicle4W->EngineSetup.MaxRPM = 10000;
+	for (int i=0; i<Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData.Keys.Num(); i++)
+		Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData.Keys[i].Value *= 3.0f;
 
 	// Create a spring arm component
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));

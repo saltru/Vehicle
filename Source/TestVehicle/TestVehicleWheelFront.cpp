@@ -5,8 +5,8 @@
 
 UTestVehicleWheelFront::UTestVehicleWheelFront()
 {
-	ShapeRadius = 35.f;
-	ShapeWidth = 10.0f;
+	ShapeRadius = 52.f;
+	ShapeWidth = 23.0f;
 	bAffectedByHandbrake = false;
 	SteerAngle = 50.f;
 }
