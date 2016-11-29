@@ -9,4 +9,5 @@ UTestVehicleWheelFront::UTestVehicleWheelFront()
 	ShapeWidth = 23.0f;
 	bAffectedByHandbrake = false;
 	SteerAngle = 50.f;
+	DampingRate = 0.25f;
 }

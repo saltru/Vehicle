@@ -92,6 +92,8 @@ public:
 	void OnToggleCamera();
 	/** Handle reset VR device */
 	void OnResetVR();
+	/** Reset the last car position **/
+	void OnResetCar();
 
 	static const FName LookUpBinding;
 	static const FName LookRightBinding;
@@ -110,6 +112,10 @@ private:
 
 	/* Are we on a 'slippery' surface */
 	bool bIsLowFriction;
+
+	/* Position and rotation for car reset by clicking R */
+	FVector lastPosition;
+	FRotator lastRotation;
 
 
 public:

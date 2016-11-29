@@ -40,25 +40,27 @@ ATestVehiclePawn::ATestVehiclePawn()
 
 	check(Vehicle4W->WheelSetups.Num() == 4);
 
+	Vehicle4W->DifferentialSetup.DifferentialType = EVehicleDifferential4W::Open_4W;
+
 	Vehicle4W->WheelSetups[0].WheelClass = UTestVehicleWheelFront::StaticClass();
 	Vehicle4W->WheelSetups[0].BoneName = FName("F_L_wheelJNT");
-	//Vehicle4W->WheelSetups[0].AdditionalOffset = FVector(0.f, -30.f, 0.f);
 
 	Vehicle4W->WheelSetups[1].WheelClass = UTestVehicleWheelFront::StaticClass();
 	Vehicle4W->WheelSetups[1].BoneName = FName("F_R_wheelJNT");
-	//Vehicle4W->WheelSetups[1].AdditionalOffset = FVector(0.f, 30.f, 0.f);
 
 	Vehicle4W->WheelSetups[2].WheelClass = UTestVehicleWheelRear::StaticClass();
 	Vehicle4W->WheelSetups[2].BoneName = FName("B_L_wheelJNT");
-	//Vehicle4W->WheelSetups[2].AdditionalOffset = FVector(0.f, -30.f, 0.f);
 
 	Vehicle4W->WheelSetups[3].WheelClass = UTestVehicleWheelRear::StaticClass();
 	Vehicle4W->WheelSetups[3].BoneName = FName("B_R_wheelJNT");
-	//Vehicle4W->WheelSetups[3].AdditionalOffset = FVector(0.f, 30.f, 0.f);
 
-	//Vehicle4W->EngineSetup.MaxRPM = 10000;
-	for (int i=0; i<Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData.Keys.Num(); i++)
-		Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData.Keys[i].Value *= 3.0f;
+	Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData.Keys = {
+		FRichCurveKey(0.0f, 1500.0f),
+		FRichCurveKey(500.0f, 15000.0f),
+		FRichCurveKey(6000.0f, 6000.0f)
+	};
+
+	Vehicle4W->DragCoefficient = 1.0f;
 
 	// Create a spring arm component
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
@@ -119,6 +121,9 @@ ATestVehiclePawn::ATestVehiclePawn()
 	GearDisplayColor = FColor(255, 255, 255, 255);
 
 	bInReverseGear = false;
+
+	lastPosition = GetActorLocation();
+	lastRotation = GetActorRotation();
 }
 
 void ATestVehiclePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -138,6 +143,8 @@ void ATestVehiclePawn::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("SwitchCamera", IE_Pressed, this, &ATestVehiclePawn::OnToggleCamera);
 
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATestVehiclePawn::OnResetVR); 
+
+	PlayerInputComponent->BindAction("ResetCar", IE_Pressed, this, &ATestVehiclePawn::OnResetCar);
 }
 
 void ATestVehiclePawn::MoveForward(float Val)
@@ -242,6 +249,19 @@ void ATestVehiclePawn::OnResetVR()
 		GetController()->SetControlRotation(FRotator());
 	}
 #endif // HMD_MODULE_INCLUDED
+}
+
+void ATestVehiclePawn::OnResetCar()
+{
+	//TeleportTo(lastPosition, FRotator(0.0f, 0.0f, 0.0f));
+	Mesh->SetAllPhysicsPosition(lastPosition);
+	Mesh->SetAllPhysicsRotation(lastRotation);
+	Mesh->SetAllPhysicsLinearVelocity(FVector(0.0f, 0.0f, 0.0f));
+	Mesh->SetAllPhysicsAngularVelocity(FVector(0.0f, 0.0f, 0.0f));
+	GetVehicleMovementComponent()->SetTargetGear(0, true);
+	GetVehicleMovementComponent()->SetThrottleInput(0.0f);
+	GetVehicleMovementComponent()->SetSteeringInput(0.0f);
+	GetVehicleMovementComponent()->SetHandbrakeInput(false);
 }
 
 void ATestVehiclePawn::UpdateHUDStrings()
