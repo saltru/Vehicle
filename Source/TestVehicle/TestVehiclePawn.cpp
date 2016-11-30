@@ -124,6 +124,9 @@ ATestVehiclePawn::ATestVehiclePawn()
 
 	lastPosition = GetActorLocation();
 	lastRotation = GetActorRotation();
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> BulletBP(TEXT("Blueprint'/Game/Projectiles/Bullet.Bullet'"));
+	BulletClass = BulletBP.Object->GeneratedClass;
 }
 
 void ATestVehiclePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -145,6 +148,7 @@ void ATestVehiclePawn::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATestVehiclePawn::OnResetVR); 
 
 	PlayerInputComponent->BindAction("ResetCar", IE_Pressed, this, &ATestVehiclePawn::OnResetCar);
+	PlayerInputComponent->BindAction("FirePrimary", IE_Pressed, this, &ATestVehiclePawn::OnFirePrimary);
 }
 
 void ATestVehiclePawn::MoveForward(float Val)
@@ -262,6 +266,15 @@ void ATestVehiclePawn::OnResetCar()
 	GetVehicleMovementComponent()->SetThrottleInput(0.0f);
 	GetVehicleMovementComponent()->SetSteeringInput(0.0f);
 	GetVehicleMovementComponent()->SetHandbrakeInput(false);
+}
+
+void ATestVehiclePawn::OnFirePrimary()
+{
+	FVector location = GetActorLocation() + GetActorForwardVector() * 100.0f + FVector(0.0f, 0.0f, 200.0f);;
+	FRotator rotation = GetActorRotation();
+	GetWorld()->SpawnActor(BulletClass, &location, &rotation);
+	UE_LOG(LogTemp, Warning, TEXT("Fire1"));
+	
 }
 
 void ATestVehiclePawn::UpdateHUDStrings()

@@ -64,6 +64,9 @@ public:
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bInReverseGear;
 
+	UPROPERTY(Category = Weapon, VisibleDefaultsOnly, BlueprintReadWrite)
+	UClass *BulletClass;
+
 	/** Initial offset of incar camera */
 	FVector InternalCameraOrigin;
 	// Begin Pawn interface
@@ -94,6 +97,8 @@ public:
 	void OnResetVR();
 	/** Reset the last car position **/
 	void OnResetCar();
+	/** Primary fire **/
+	void OnFirePrimary();
 
 	static const FName LookUpBinding;
 	static const FName LookRightBinding;
