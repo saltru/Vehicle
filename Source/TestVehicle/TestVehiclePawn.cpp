@@ -62,16 +62,32 @@ ATestVehiclePawn::ATestVehiclePawn()
 
 	Vehicle4W->DragCoefficient = 1.0f;
 
+	//Weapons
+
+	
+	RocketTurret = CreateAbstractDefaultSubobject<UStaticMeshComponent>(TEXT("RocketTurret"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> RocketTurretMesh(TEXT("StaticMesh'/Game/Projectiles/sci_fi_turret_4.sci_fi_turret_4'"));
+	RocketTurret->SetStaticMesh(RocketTurretMesh.Object);
+//	RocketTurret->SetRelativeScale3D(FVector(2.0f, 2.0f, 2.0f));
+	RocketTurret->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+//	RocketTurret->SetRelativeLocation(FVector(43.0f, 0.0f, 277.0f));
+	RocketTurret->SetupAttachment(GetMesh(), "TopWeapon");	
+	RocketTurret->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 	// Create a spring arm component
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
 	SpringArm->TargetOffset = FVector(0.f, 0.f, 200.f);
 	SpringArm->SetRelativeRotation(FRotator(-15.f, 0.f, 0.f));
-	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->SetupAttachment(GetMesh());
 	SpringArm->TargetArmLength = 600.0f;
-	SpringArm->bEnableCameraRotationLag = true;
+	SpringArm->bEnableCameraRotationLag = false;
 	SpringArm->CameraRotationLagSpeed = 7.f;
 	SpringArm->bInheritPitch = false;
 	SpringArm->bInheritRoll = false;
+	
+//	SpringArm->bInheritYaw = false;
+	//SpringArm->bUseControllerViewRotation = true;
+	//SpringArm->bUsePawnControlRotation = true;
 
 	// Create camera component 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
@@ -80,7 +96,7 @@ ATestVehiclePawn::ATestVehiclePawn()
 	Camera->FieldOfView = 90.f;
 
 	// Create In-Car camera component 
-	InternalCameraOrigin = FVector(0.0f, -40.0f, 120.0f);
+	InternalCameraOrigin = FVector(-500.0f, 0.0f, 300.0f);
 
 	InternalCameraBase = CreateDefaultSubobject<USceneComponent>(TEXT("InternalCameraBase"));
 	InternalCameraBase->SetRelativeLocation(InternalCameraOrigin);
@@ -222,12 +238,24 @@ void ATestVehiclePawn::Tick(float Delta)
 #endif // HMD_MODULE_INCLUDED
 	if (bHMDActive == false)
 	{
-		if ( (InputComponent) && (bInCarCameraActive == true ))
+		if (InputComponent) 
 		{
-			FRotator HeadRotation = InternalCamera->RelativeRotation;
-			HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
-			HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
-			InternalCamera->RelativeRotation = HeadRotation;
+			HeadDeltaRotation.Pitch = InputComponent->GetAxisValue(LookUpBinding);
+			HeadDeltaRotation.Yaw = InputComponent->GetAxisValue(LookRightBinding);
+			HeadDeltaRotation.Roll = 0.0f;
+
+			if (bInCarCameraActive == true)
+			{
+				FRotator HeadRotation = InternalCamera->RelativeRotation;
+				HeadRotation.Pitch += InputComponent->GetAxisValue(LookUpBinding);
+				HeadRotation.Yaw += InputComponent->GetAxisValue(LookRightBinding);
+				InternalCamera->RelativeRotation = HeadRotation;
+			}
+			else
+			{
+				SpringArm->RelativeRotation += HeadDeltaRotation;
+			RocketTurret->RelativeRotation += FRotator(-HeadDeltaRotation.Pitch, HeadDeltaRotation.Yaw, HeadDeltaRotation.Roll);
+			}
 		}
 	}
 }
@@ -270,8 +298,12 @@ void ATestVehiclePawn::OnResetCar()
 
 void ATestVehiclePawn::OnFirePrimary()
 {
-	FVector location = GetActorLocation() + GetActorForwardVector() * 100.0f + FVector(0.0f, 0.0f, 200.0f);;
-	FRotator rotation = GetActorRotation();
+	FVector location = RocketTurret->GetComponentLocation() + RocketTurret->GetForwardVector() * 50.0f + FVector(0.0f, 0.0f, 100.0f);	
+	FRotator rotation = RocketTurret->GetComponentRotation() + FRotator(0.0f, 180.0f, 0.0f);
+	
+	location = RocketTurret->GetSocketLocation("FireHole");
+	rotation = RocketTurret->GetSocketRotation("FireHole");
+
 	GetWorld()->SpawnActor(BulletClass, &location, &rotation);
 	UE_LOG(LogTemp, Warning, TEXT("Fire1"));
 	

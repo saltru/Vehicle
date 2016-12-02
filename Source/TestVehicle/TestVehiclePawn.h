@@ -36,6 +36,8 @@ class ATestVehiclePawn : public AWheeledVehicle
 	UPROPERTY(Category = Display, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UTextRenderComponent* InCarGear;
 
+
+
 	
 public:
 	ATestVehiclePawn();
@@ -66,6 +68,11 @@ public:
 
 	UPROPERTY(Category = Weapon, VisibleDefaultsOnly, BlueprintReadWrite)
 	UClass *BulletClass;
+
+	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadWrite)
+	UStaticMeshComponent* RocketTurret;
+
+	FRotator HeadDeltaRotation;
 
 	/** Initial offset of incar camera */
 	FVector InternalCameraOrigin;
