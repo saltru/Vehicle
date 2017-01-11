@@ -56,11 +56,10 @@ ATestVehiclePawn::ATestVehiclePawn()
 	Vehicle4W->WheelSetups[3].WheelClass = UTestVehicleWheelRear::StaticClass();
 	Vehicle4W->WheelSetups[3].BoneName = FName("B_R_wheelJNT");
 
-	Vehicle4W->EngineSetup.MaxRPM = 20000;
+	Vehicle4W->EngineSetup.MaxRPM = 6000;
 	Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData.Keys = {
 		FRichCurveKey(0.0f, 2500.0f),
-		FRichCurveKey(500.0f, 5000.0f),
-		FRichCurveKey(6000.0f, 4500.0f)
+		FRichCurveKey(6000.0f, 2500.0f)
 	};
 
 	Vehicle4W->DragCoefficient = 1.0f;
