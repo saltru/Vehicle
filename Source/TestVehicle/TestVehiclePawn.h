@@ -72,6 +72,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = Weapon, BlueprintReadWrite)
 	UStaticMeshComponent* RocketTurret;
 
+	UPhysicalMaterial *vehiclePhysMaterial;
+
 	FRotator HeadDeltaRotation;
 
 	/** Initial offset of incar camera */

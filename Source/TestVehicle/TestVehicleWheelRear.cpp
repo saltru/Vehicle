@@ -15,8 +15,8 @@ UTestVehicleWheelRear::UTestVehicleWheelRear()
 	TireType = LoadObject<UTireType>(NULL, TEXT("/Game/Vehicles/VH_Buggy/Blueprint/VH_Buggy_TireType.VH_Buggy_TireType"), NULL, LOAD_None, NULL);
 
 	LatStiffMaxLoad = 4.0f;
-	LatStiffValue = 200.0f;
-	LongStiffValue = 1000.0f;
+	LatStiffValue = 10.0f;
+	LongStiffValue = 10000.0f;
 
 	SuspensionMaxRaise = 20.0f;
 	SuspensionMaxDrop = 40.0f;
