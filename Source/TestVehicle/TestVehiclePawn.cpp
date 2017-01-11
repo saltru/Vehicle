@@ -62,6 +62,19 @@ ATestVehiclePawn::ATestVehiclePawn()
 		FRichCurveKey(6000.0f, 2500.0f)
 	};
 
+	Vehicle4W->TransmissionSetup.GearSwitchTime = 0.0f;
+	Vehicle4W->TransmissionSetup.GearAutoBoxLatency = 0.0f;
+	Vehicle4W->TransmissionSetup.FinalRatio = 4.0f;
+
+	Vehicle4W->TransmissionSetup.ForwardGears.Empty();
+
+	FVehicleGearData FirstGear;
+	FirstGear.Ratio = 2.0f;
+	FirstGear.UpRatio = 1.0f;
+	FirstGear.DownRatio = 0.0f;
+
+	Vehicle4W->TransmissionSetup.ForwardGears.Add(FirstGear);
+
 	Vehicle4W->DragCoefficient = 1.0f;
 
 	Vehicle4W->InertiaTensorScale = FVector(3.0f, 3.0f, 3.0f);
